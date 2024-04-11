@@ -1,5 +1,3 @@
-#define _USE_MATH_DEFINES //maybe remove and just use precalced unit
-#include <math.h>
 #include <PRIZM.h>    // Include PRIZM Library
 
 PRIZM prizm;          // Instantiate an object named prizm
@@ -9,8 +7,10 @@ void setup() {
 
 
   prizm.PrizmBegin(); // Initiates the PRIZM controller - must be called in the setup of each PRIZM sketch
-  int wheelRadius = //uknown in cm;
-  int robotRadius = //unknown in cm;
+  const int wheelRadius = 0;//uknown in cm
+  const int robotRadius = 0; //unknown in cm
+
+  const long double PI = 3.14159265358979324;
 
   enum team{
     red = 1,
@@ -20,11 +20,9 @@ void setup() {
   int team = red /*or blue*/;
 
   enum arm{
-    idek = 1 //we can only have 2 motors during auto so regardless of drive train we can't have a motored powered arm.
-
-
+    idek = 1, //we can only have 2 motors during auto so regardless of drive train we can't have a motored powered arm.
     hand = 4 //servo
-  }
+  };
 
   enum drivetrain{
     Right = 2,  //motor
@@ -35,13 +33,13 @@ void setup() {
 
 // given a distance, converts to degrees
 int distance(int distance){
-  return round((360 * distance)/(wheelRadius * 2 * M_PI));
+  return round((360 * distance)/(wheelRadius * 2 * PI));
 }
 
 //given a direction, and a numebr of degrees, will turn that direction and that number of degrees (-1 turns right, 1 turns left)
 void turn(int direction, int degrees){
-  prizm.setMotorDegree(right, 100, distance((robotRadius * 2 * M_PI)/(360/degrees)) * direction);
-  Prizm.setMotorDefree(left, 100, distance((robotRadius * 2 * M_PI)/(360/degrees)) * -direction);
+  prizm.setMotorDegree(right, 100, distance((robotRadius * 2 * PI)/(360/degrees)) * direction);
+  Prizm.setMotorDefree(left, 100, distance((robotRadius * 2 * PI)/(360/degrees)) * -direction);
   while (prizm.readMotorBusy(2) == 1 || prizm.readMotorBusy(3) == 1 {
     delay(1);
   }
