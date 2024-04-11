@@ -1,10 +1,12 @@
-#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES //maybe remove and just use precalced unit
 #include <math.h>
 #include <PRIZM.h>    // Include PRIZM Library
 
 PRIZM prizm;          // Instantiate an object named prizm
 
 void setup() {
+  prizm.setServoPositions(prizm.readServoPosition(1), 0, 0, 0, 0, 90,;
+
 
   prizm.PrizmBegin(); // Initiates the PRIZM controller - must be called in the setup of each PRIZM sketch
   int wheelRadius = //uknown in cm;
@@ -13,16 +15,22 @@ void setup() {
   enum team{
     red = 1,
     blue = -1
-  }
+  };
   //allows 1 code to work for both alliances
   int team = red /*or blue*/;
 
-  enum motor{
-    Right = 2,
-    Left = 3,
-    Center = 1,
-  };
+  enum arm{
+    idek = 1 //we can only have 2 motors during auto so regardless of drive train we can't have a motored powered arm.
 
+
+    hand = 4 //servo
+  }
+
+  enum drivetrain{
+    Right = 2,  //motor
+    Left = 1,   //motor
+    center = 1, //servo
+  };
 }
 
 // given a distance, converts to degrees
@@ -42,13 +50,14 @@ void turn(int direction, int degrees){
 
 
 void loop() {
-  while(/*code for line sensor*/){ //moves sideways until inline with bonus rack
-    prizm.setMotorSpeed(center, 255);
+  while(prizm.readLineSensor(/*uknown*/) == 1){ //moves sideways until inline with bonus rack
+    prizm.setServoSpeed(center,100);
   }
   //stop movement
-  prizm.setMotorspeed(center, 125);
+  prizm.setServoSpeed(center,0);
 
-  //code for servos, lifts arm
+  //lifts arm
+    prizm.setServoPositions(prizm.readServoPosition(1),90, 90, 90, 90,prizm.readServoPosition(6));
 
   //moves forward to put arm above rack
   prizm.setMotorDegree(right, 100, distance(25));
@@ -58,7 +67,7 @@ void loop() {
   }
 
   //releases fish
-  //code for servos, release grasp
+  prizm.setServoPosition(6, 0);
 
   //moves backwards so that arm is no longer above rack
   prizm.setMotorDegree(right, 100, distance(-25));
@@ -68,22 +77,26 @@ void loop() {
   }
 
   //lowers arm for better movement
-  //code for servos, lower arm
+  prizm.setServoPositions(prizm.readServoPosition(1),0, 0, 0, 0,prizm.readServoPosition(6));
 
   //moves sideways until in range of the hooks using ultrasonic
-  while(/*ultrasonic code*/){
-    prizm.setMotorspeed(center, 100);
+  while(prizm.readSonicSensorCM(/*uknown*/) <= 32){
+      prizm.setServoSpeed(center,100);
+
   }
   //stop movement
-  prizm.setMotorspeed(center, 125);
+  prizm.setServoSpeed(center,0);
   
   //turns 90 degrees to allow for alligment with hooks
   turn(team, 90);
 
   //moves sideways for alligment with hooks (will need to be manually calibrated)
-  prizm.setMotorDegree(center, 100, 40); //maybe 50
-
+    prizm.setServoSpeed(center,100);
+    delay(/*something*/);
+    prizm.setServoSpeed(center,0);
+  
   //code for servos, raise arm
+  prizm.setServoPositions(prizm.readServoPosition(1),90, 90, 90, 90,prizm.readServoPosition(6));
 
   //moves forwards until arm is above hooks
   prizm.setMotorDegree(right, 100, distance(25));
@@ -93,7 +106,7 @@ void loop() {
   }
 
   //grabs 2 fish off the rack
-  //code for servos, grab
+  prizm.setServoPosition(6, 90);
 
   //moves backwards from rack
   prizm.setMotorDegree(right, 100, distance(-25));
@@ -103,8 +116,7 @@ void loop() {
   }
 
   //lowers arm
-  //code for servo, lower arm
-
+  prizm.setServoPositions(prizm.readServoPosition(1), 0, 0, 0, 0, prizm.readServoPosition(6));
 
   //code for either returning to the warehouse, or placing fish on drying rack. :)
 }
