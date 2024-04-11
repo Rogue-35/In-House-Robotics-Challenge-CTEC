@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <PRIZM.h>    // Include PRIZM Library
 
@@ -10,13 +11,11 @@ void setup() {
   int robotRadius = //unknown in cm;
 
   enum team{
-    red = 1
+    red = 1,
     blue = -1
   }
+  //allows 1 code to work for both alliances
   int team = red /*or blue*/;
-
-  const double pi = 3.14159;
-
 
   enum motor{
     Right = 2,
@@ -28,13 +27,17 @@ void setup() {
 
 // given a distance, converts to degrees
 int distance(int distance){
-  return round((360 * distance)/(wheelRadius * 2 * pi));
+  return round((360 * distance)/(wheelRadius * 2 * M_PI));
 }
 
 //given a direction, and a numebr of degrees, will turn that direction and that number of degrees (-1 turns right, 1 turns left)
 void turn(int direction, int degrees){
-  prizm.setMotorDegree(right, 100, distance((robotRadius * 2 * pi)/(360/degrees)) * direction);
-  Prizm.setMotorDefree(left, 100, distance((robotRadius * 2 * pi)/(360/degrees)) * -direction);
+  prizm.setMotorDegree(right, 100, distance((robotRadius * 2 * M_PI)/(360/degrees)) * direction);
+  Prizm.setMotorDefree(left, 100, distance((robotRadius * 2 * M_PI)/(360/degrees)) * -direction);
+  while (prizm.readMotorBusy(2) == 1 || prizm.readMotorBusy(3) == 1 {
+    delay(1);
+  }
+  return 0
 }
 
 
@@ -42,12 +45,14 @@ void loop() {
   while(/*code for line sensor*/){ //moves sideways until inline with bonus rack
     prizm.setMotorSpeed(center, 255);
   }
+  //stop movement
+  prizm.setMotorspeed(center, 125);
 
   //code for servos, lifts arm
 
   //moves forward to put arm above rack
-  prizm.setMotorDegree(right, 100, distance(25)))
-  prizm.setMotorDegree(left, 100, distance(25))
+  prizm.setMotorDegree(right, 100, distance(25));
+  prizm.setMotorDegree(left, 100, distance(25));
   while (prizm.readMotorBusy(2) == 1 || prizm.readMotorBusy(3) == 1 {
     //do nothing
   }
@@ -56,7 +61,7 @@ void loop() {
   //code for servos, release grasp
 
   //moves backwards so that arm is no longer above rack
-  prizm.setMotorDegree(right, 100, distance(-25))
+  prizm.setMotorDegree(right, 100, distance(-25));
   prizm.setMotorDegree(left, 100, distance(-25));
   while (prizm.readMotorBusy(right) == 1 || prizm.readMotorBusy(left) == 1 {
     //do nothing
@@ -65,20 +70,24 @@ void loop() {
   //lowers arm for better movement
   //code for servos, lower arm
 
-  //moves sideways until in range of the hooks (may use ultrasonic)
-  prizm.setMotorDegree(center, 100, distance(//needs to be calculated by determining how far the robot went forawrd, and how much further it needs to go to get to ~ 325cm));
-
+  //moves sideways until in range of the hooks using ultrasonic
+  while(/*ultrasonic code*/){
+    prizm.setMotorspeed(center, 100);
+  }
+  //stop movement
+  prizm.setMotorspeed(center, 125);
+  
   //turns 90 degrees to allow for alligment with hooks
   turn(team, 90);
 
   //moves sideways for alligment with hooks (will need to be manually calibrated)
-  prizm.setMotorDegree(center, 100, 40) //maybe 50
+  prizm.setMotorDegree(center, 100, 40); //maybe 50
 
   //code for servos, raise arm
 
   //moves forwards until arm is above hooks
-  prizm.setMotorDegree(right, 100, distance(25)))
-  prizm.setMotorDegree(left, 100, distance(25))
+  prizm.setMotorDegree(right, 100, distance(25));
+  prizm.setMotorDegree(left, 100, distance(25));
   while (prizm.readMotorBusy(right) == 1 || prizm.readMotorBusy(left) == 1 {
     //do nothing
   }
@@ -87,7 +96,7 @@ void loop() {
   //code for servos, grab
 
   //moves backwards from rack
-  prizm.setMotorDegree(right, 100, distance(-25))
+  prizm.setMotorDegree(right, 100, distance(-25));
   prizm.setMotorDegree(left, 100, distance(-25));
   while (prizm.readMotorBusy(right) == 1 || prizm.readMotorBusy(left) == 1 {
     //do nothing
