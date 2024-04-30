@@ -7,8 +7,8 @@ void setup() {
 
 
     prizm.PrizmBegin(); // Initiates the PRIZM controller - must be called in the setup of each PRIZM sketch
-    const int WHEELRADIUS = 0;//uknown in cm
-    const int ROBOTRADIUS = 0; //unknown in cm
+    const double WHEELRADIUS = 10.13;//uknown in cm
+    const double ROBOTRADIUS = 0; //unknown in cm
 
     const long double PI = 3.14159265358979324;
 
@@ -36,20 +36,9 @@ void setup() {
 }
 
 // given a distance, converts to degrees
-int distance(int distance) {
+double distance(double distance) {
     return round((360 * distance) / (WHEELRADIUS * 2 * PI));
 }
-
-//given a direction, and a numebr of degrees, will turn that direction and that number of degrees (-1 turns right, 1 turns LEFT)
-void turn(int direction, int degrees) {
-    prizm.setMotorDegree(RIGHT, 100, distance((ROBOTRADIUS * 2 * PI) / (360 / degrees)) * direction);
-    Prizm.setMotorDefree(LEFT, 100, distance((ROBOTRADIUS * 2 * PI) / (360 / degrees)) * -direction);
-    while (prizm.readMotorBusy(2) == 1 || prizm.readMotorBusy(3) == 1 {
-        delay(1);
-    }
-    return 0
-}
-
 
 void loop() {
     while (prizm.readLineSensor(LINE) == 1) { //moves sideways until inline with bonus rack
@@ -59,8 +48,8 @@ void loop() {
     prizm.setServoSpeed(CENTER, 0);
 
     //moves forward to put arm above rack
-    prizm.setMotorDegree(RIGHT, 100, distance(25));
-    prizm.setMotorDegree(LEFT, 100, distance(25));
+    prizm.setMotorDegree(RIGHT, 100, distance(30.48));
+    prizm.setMotorDegree(LEFT, 100, distance(30.48));
     while (prizm.readMotorBusy(2) == 1 || prizm.readMotorBusy(3) == 1 {
         //do nothing
     }
@@ -69,8 +58,8 @@ void loop() {
     prizm.setServoPosition(HAND, 0);
 
     //moves backwards so that arm is no longer above rack
-    prizm.setMotorDegree(RIGHT, 100, distance(-250));
-    prizm.setMotorDegree(LEFT, 100, distance(-250));
+    prizm.setMotorDegree(RIGHT, 100, distance(-96.52));
+    prizm.setMotorDegree(LEFT, 100, distance(-96.52));
     while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1 {
         //do nothing
     }
