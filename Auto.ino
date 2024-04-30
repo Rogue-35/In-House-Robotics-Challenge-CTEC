@@ -1,67 +1,71 @@
-#include <PRIZM.h>    // Include PRIZM Library
+#include <PRIZM.h>  // Include PRIZM Library
+#include <math.h>
 
-PRIZM prizm;          // Instantiate an object named prizm
+PRIZM prizm;                       // Instantiate an object named prizm
+const double WHEELRADIUS = 10.13;  //uknown in cm
+const double ROBOTRADIUS = 0;      //unknown in cm
+
+const double pi = M_PI;
+
+enum team {
+  red = 1,
+  blue = -1
+};
+//allows 1 code to work for both alliances
+int team = red /*or blue*/;
+
+enum arm {
+  HAND = 1  //servo
+};
+
+enum drivetrain {
+  RIGHT = 2,  //motor
+  LEFT = 1,   //motor
+  CENTER = 1  //servo
+};
+
+enum sensors {
+  LINE = 2,
+};
+bool h = true;
 
 void setup() {
-    prizm.setServoPositions(prizm.readServoPosition(1), 0, 0, 0, 0, 90, ;
-
-
-    prizm.PrizmBegin(); // Initiates the PRIZM controller - must be called in the setup of each PRIZM sketch
-    const double WHEELRADIUS = 10.13;//uknown in cm
-    const double ROBOTRADIUS = 0; //unknown in cm
-
-    const long double PI = 3.14159265358979324;
-
-    enum team {
-        red = 1,
-        blue = -1
-    };
-    //allows 1 code to work for both alliances
-    int team = red /*or blue*/;
-
-    enum arm {
-        HAND = 4 //servo
-    };
-
-    enum drivetrain {
-        RIGHT = 2,  //motor
-        LEFT = 1,   //motor
-        CENTER = 1 //servo
-    };
-
-    enum sensors {
-        LINE = 1,
-        DISTANCE = 2
-    };
+  prizm.PrizmBegin();  // Initiates the PRIZM controller - must be called in the setup of each PRIZM sketch
+  prizm.setMotorInvert(RIGHT, 1);
+  prizm.setServoPosition(HAND, 180);
+  prizm.resetEncoders();
 }
 
 // given a distance, converts to degrees
 double distance(double distance) {
-    return round((360 * distance) / (WHEELRADIUS * 2 * PI));
+  prizm.resetEncoders();
+
+  return (360 * distance) / (WHEELRADIUS * 2 * pi);
 }
 
 void loop() {
-    while (prizm.readLineSensor(LINE) == 1) { //moves sideways until inline with bonus rack
-        prizm.setServoSpeed(CENTER, 100);
-    }
-    //stop movement
-    prizm.setServoSpeed(CENTER, 0);
+  
+  if (prizm.readLineSensor(LINE) == 1 && h) {  //moves sideways until inline with bonus rack
+    prizm.setCRServoState(CENTER, 100 * team);
+    return;
+  } else {
+    h = false;
+  }
 
-    //moves forward to put arm above rack
-    prizm.setMotorDegree(RIGHT, 100, distance(30.48));
-    prizm.setMotorDegree(LEFT, 100, distance(30.48));
-    while (prizm.readMotorBusy(2) == 1 || prizm.readMotorBusy(3) == 1 {
-        //do nothing
-    }
+  //stop movement
+  prizm.setCRServoState(CENTER, 0);
+  prizm.setMotorTargets(100, prizm.readEncoderDegrees(LEFT) + distance(250.48), 100, prizm.readEncoderDegrees(RIGHT) + distance(250.48));
+  //moves forward to put arm above rack
 
-    //releases fish
-    prizm.setServoPosition(HAND, 0);
+  while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1);
+  delay(1000);
 
-    //moves backwards so that arm is no longer above rack
-    prizm.setMotorDegree(RIGHT, 100, distance(-96.52));
-    prizm.setMotorDegree(LEFT, 100, distance(-96.52));
-    while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1 {
-        //do nothing
-    }
+  //releases fish
+  prizm.setServoPosition(HAND, 0);
+  delay(1000);
 
+  //moves backwards so that arm is no longer above rack
+  prizm.setMotorTargets(100, prizm.readEncoderDegrees(LEFT) + distance(-600.48), 100, prizm.readEncoderDegrees(RIGHT) + distance(-600.48));
+  while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1);
+  prizm.PrizmEnd();
 }
