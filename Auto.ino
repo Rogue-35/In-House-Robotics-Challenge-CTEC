@@ -69,44 +69,10 @@ void loop() {
     prizm.setServoPosition(HAND, 0);
 
     //moves backwards so that arm is no longer above rack
-    prizm.setMotorDegree(RIGHT, 100, distance(-25));
-    prizm.setMotorDegree(LEFT, 100, distance(-25));
+    prizm.setMotorDegree(RIGHT, 100, distance(-250));
+    prizm.setMotorDegree(LEFT, 100, distance(-250));
     while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1 {
         //do nothing
     }
 
-    //moves sideways until in range of the hooks using ultrasonic
-    while (prizm.readSonicSensorCM(DISTANCE) <= 32) {
-        prizm.setServoSpeed(CENTER, 100);
-
-    }
-    //stop movement
-    prizm.setServoSpeed(CENTER, 0);
-
-    //turns 90 degrees to allow for alligment with hooks
-    turn(team, 90);
-
-    //moves sideways for alligment with hooks (will need to be manually calibrated)
-    prizm.setServoSpeed(CENTER, 100);
-    delay(/*something*/);
-    prizm.setServoSpeed(CENTER, 0);
-
-    //moves forwards until arm is above hooks
-    prizm.setMotorDegree(RIGHT, 100, distance(25));
-    prizm.setMotorDegree(LEFT, 100, distance(25));
-    while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1 {
-        //do nothing
-    }
-
-    //grabs 2 fish off the rack
-    prizm.setServoPosition(HAND, 90);
-
-    //moves backwards from rack
-    prizm.setMotorDegree(RIGHT, 100, distance(-25));
-    prizm.setMotorDegree(LEFT, 100, distance(-25));
-    while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1 {
-        //do nothing
-    }
-
-    //code for either returning to the warehouse, or placing fish on drying rack. :)
 }
