@@ -12,7 +12,7 @@ enum team {
   blue = -1
 };
 //allows 1 code to work for both alliances
-int team = red /*or blue*/;
+int team = blue;
 
 enum arm {
   HAND = 1  //servo
@@ -54,7 +54,7 @@ void loop() {
 
   //stop movement
   prizm.setCRServoState(CENTER, 0);
-  prizm.setMotorTargets(100, prizm.readEncoderDegrees(LEFT) + distance(250.48), 100, prizm.readEncoderDegrees(RIGHT) + distance(250.48));
+  prizm.setMotorTargets(100, prizm.readEncoderDegrees(LEFT) + distance(200.48), 100, prizm.readEncoderDegrees(RIGHT) + distance(200.48));
   //moves forward to put arm above rack
 
   while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1);
@@ -65,7 +65,9 @@ void loop() {
   delay(1000);
 
   //moves backwards so that arm is no longer above rack
-  prizm.setMotorTargets(100, prizm.readEncoderDegrees(LEFT) + distance(-600.48), 100, prizm.readEncoderDegrees(RIGHT) + distance(-600.48));
+  prizm.setMotorTargets(100, prizm.readEncoderDegrees(LEFT) + distance(-760.48), 100, prizm.readEncoderDegrees(RIGHT) + distance(-760.48));
   while (prizm.readMotorBusy(RIGHT) == 1 || prizm.readMotorBusy(LEFT) == 1);
+  prizm.setServoPosition(HAND, 180);
+  delay(1000);
   prizm.PrizmEnd();
 }
